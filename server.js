@@ -31,8 +31,45 @@ const routes = {
   },
   '/comments': {
     'POST': createComment
+  },
+  '/comments/:id': {
+    'PUT': updateComment,
+    'DELETE': deleteComment
   }
 };
+
+function deleteComment(url, request) {
+
+}
+
+function updateComment(url, request) {
+  const requestComment = request.body && request.body.comment;
+  const response = {};
+
+  if (requestComment && requestComment.body &&
+    requestComment.username && database.users[requestComment.username] &&
+    requestComment.commentId && database.comments[requestComment.commentId]) {
+    const comment = {
+      id: requestComment.commentId,
+      body: requestComment.body,
+      username: requestComment.username,
+      articleId: requestComment.articleId,
+      upvotedBy: requestComment.upvotedBy,
+      downvotedBy: requestComment.downvotedBy
+    };
+//
+    database.comments[comment.id] = comment;
+
+    response.body = { comment: comment };
+    response.status = 201;
+  } else if(requestComment && requestComment.body && requestComment.commentId) {
+    response.status = 404;
+  } else {
+    response.status = 400;
+  }
+
+  return response;
+}
 
 function createComment(url, request) {
   const requestComment = request.body && request.body.comment;
@@ -45,7 +82,7 @@ function createComment(url, request) {
       id: database.nextCommentId++,
       body: requestComment.body,
       username: requestComment.username,
-      articleId: [],
+      articleId: requestComment.articleId,
       upvotedBy: [],
       downvotedBy: []
     };
