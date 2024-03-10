@@ -39,30 +39,55 @@ const routes = {
 };
 
 function deleteComment(url, request) {
+  const id = Number(url.split('/').filter(segment => segment)[1]);
+  // const requestComment = request.body && request.body.comment;
+  const response = {};
+
+  if (// requestComment && requestComment.body &&
+    // requestComment.username && database.users[requestComment.username] &&
+    id && database.comments[id]) {
+      /*const comment = {
+        id: id,
+        body: requestComment.body,
+        username: requestComment.username,
+        articleId: requestComment.articleId,
+        upvotedBy: requestComment.upvotedBy,
+        downvotedBy: requestComment.downvotedBy
+      };*/
+  
+      delete database.comments[id];
+      // delete references
+  
+      // response.body = { comment: comment };
+      response.status = 204;
+    } else {
+      response.status = 404;
+    }
 
 }
 
 function updateComment(url, request) {
+  const id = Number(url.split('/').filter(segment => segment)[1]);
   const requestComment = request.body && request.body.comment;
   const response = {};
 
   if (requestComment && requestComment.body &&
     requestComment.username && database.users[requestComment.username] &&
-    requestComment.commentId && database.comments[requestComment.commentId]) {
+    id && database.comments[id]) {
     const comment = {
-      id: requestComment.commentId,
+      id: id,
       body: requestComment.body,
       username: requestComment.username,
       articleId: requestComment.articleId,
       upvotedBy: requestComment.upvotedBy,
       downvotedBy: requestComment.downvotedBy
     };
-//
+
     database.comments[comment.id] = comment;
 
     response.body = { comment: comment };
-    response.status = 201;
-  } else if(requestComment && requestComment.body && requestComment.commentId) {
+    response.status = 200;
+  } else if(requestComment && requestComment.body && id) {
     response.status = 404;
   } else {
     response.status = 400;
