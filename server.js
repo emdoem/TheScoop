@@ -35,35 +35,56 @@ const routes = {
   '/comments/:id': {
     'PUT': updateComment,
     'DELETE': deleteComment
+  },
+  '/comments/:id/upvote': {
+    'PUT': upvoteComment
+  },
+  '/comments/:id/downvote': {
+    'PUT': downvoteComment
   }
 };
 
+function upvoteComment(url, request) {
+
+}
+
+function downvoteComment(url, request) {
+
+}
+
 function deleteComment(url, request) {
   const id = Number(url.split('/').filter(segment => segment)[1]);
-  // const requestComment = request.body && request.body.comment;
+  const requestComment = database.comments[id];
   const response = {};
 
-  if (// requestComment && requestComment.body &&
-    // requestComment.username && database.users[requestComment.username] &&
+  if (requestComment && requestComment.body &&
+    requestComment.username && database.users[requestComment.username] &&
     id && database.comments[id]) {
-      /*const comment = {
+      const comment = {
         id: id,
         body: requestComment.body,
         username: requestComment.username,
         articleId: requestComment.articleId,
         upvotedBy: requestComment.upvotedBy,
         downvotedBy: requestComment.downvotedBy
-      };*/
+      };
   
-      delete database.comments[id];
-      // delete references
-  
-      // response.body = { comment: comment };
+      database.comments[id] = null;
+      
+      // - remove reference to comment
+      database.users[comment.username].commentIds = database.users[comment.username].commentIds
+        .filter(commentId => commentId != id);
+      database.articles[comment.articleId].commentIds = database.articles[comment.articleId].commentIds
+        .filter(commentId => commentId != id);
+      
+    
+      response.body = { comment: comment };
       response.status = 204;
     } else {
       response.status = 404;
     }
 
+    return response;
 }
 
 function updateComment(url, request) {
@@ -83,7 +104,7 @@ function updateComment(url, request) {
       downvotedBy: requestComment.downvotedBy
     };
 
-    database.comments[comment.id] = comment;
+    database.comments[id] = comment;
 
     response.body = { comment: comment };
     response.status = 200;
@@ -114,6 +135,7 @@ function createComment(url, request) {
 
     database.comments[comment.id] = comment;
     database.users[comment.username].commentIds.push(comment.id);
+    database.articles[comment.articleId].commentIds.push(comment.id);
 
     response.body = { comment: comment };
     response.status = 201;
