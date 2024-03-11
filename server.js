@@ -71,7 +71,7 @@ function deleteComment(url, request) {
   
       database.comments[id] = null;
       
-      // - remove reference to comment
+      // remove reference to comment
       database.users[comment.username].commentIds = database.users[comment.username].commentIds
         .filter(commentId => commentId != id);
       database.articles[comment.articleId].commentIds = database.articles[comment.articleId].commentIds
@@ -93,15 +93,15 @@ function updateComment(url, request) {
   const response = {};
 
   if (requestComment && requestComment.body &&
-    requestComment.username && database.users[requestComment.username] &&
+    // requestComment.username && database.users[requestComment.username] && - this doesn't get passed here
     id && database.comments[id]) {
     const comment = {
-      id: id,
+      id: database.comments[id].id,
       body: requestComment.body,
-      username: requestComment.username,
-      articleId: requestComment.articleId,
-      upvotedBy: requestComment.upvotedBy,
-      downvotedBy: requestComment.downvotedBy
+      username: database.comments[id].username,
+      articleId: database.comments[id].articleId,
+      upvotedBy: database.comments[id].upvotedBy,
+      downvotedBy: database.comments[id].downvotedBy
     };
 
     database.comments[id] = comment;
