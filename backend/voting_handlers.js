@@ -8,6 +8,7 @@ function upvote(item, username) {
   return item;
 }
 exports.upvote = upvote;
+
 function downvote(item, username) {
   if (item.upvotedBy.includes(username)) {
     item.upvotedBy.splice(item.upvotedBy.indexOf(username), 1);
