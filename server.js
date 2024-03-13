@@ -3,7 +3,7 @@ const url = require('url');
 const { requestHandler } = require('./backend/requestHandler');
 const { getOrCreateUser, getUser } = require('./backend/user_handlers');
 const { getArticles, createArticle, getArticle, updateArticle, deleteArticle, upvoteArticle, downvoteArticle } = require('./backend/article_handlers');
-const { upvote } = require('./backend/voting_handlers');
+const { upvote, downvote } = require('./backend/voting_handlers');
 
 // database is let instead of const to allow us to modify it in test.js
 let database = {
@@ -72,7 +72,21 @@ function upvoteComment(url, request) {
 }
 
 function downvoteComment(url, request) {
+  const id = Number(url.split('/').filter(segment => segment)[1]);
+  const username = request.body && request.body.username;
+  let savedComment = database.comments[id];
+  const response = {};
 
+  if (savedComment && database.users[username]) {
+    savedComment = downvote(savedComment, username);
+
+    response.body = { comment: savedComment };
+    response.status = 200;
+  } else {
+    response.status = 400;
+  }
+
+  return response;
 }
 
 function deleteComment(url, request) {
