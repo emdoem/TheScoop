@@ -1,5 +1,5 @@
 const { upvote, downvote } = require('./voting_handlers');
-const { database } = require('../server');
+const { database } = require('./database');
 
 function upvoteComment(url, request) {
   const id = Number(url.split('/').filter(segment => segment)[1]);

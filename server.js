@@ -4,16 +4,7 @@ const { requestHandler } = require('./backend/requestHandler');
 const { getOrCreateUser, getUser } = require('./backend/user_handlers');
 const { getArticles, createArticle, getArticle, updateArticle, deleteArticle, upvoteArticle, downvoteArticle } = require('./backend/article_handlers');
 const { createComment, updateComment, deleteComment, upvoteComment, downvoteComment } = require('./backend/comment_handlers');
-
-// database is let instead of const to allow us to modify it in test.js
-let database = {
-  users: {},
-  articles: {},
-  nextArticleId: 1,
-  comments: {},
-  nextCommentId: 1
-};
-exports.database = database;
+const { database } = require('./backend/database');
 
 const routes = {
   '/users': {

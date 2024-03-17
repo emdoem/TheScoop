@@ -1,4 +1,4 @@
-const { database } = require('../server');
+const { database } = require('./database');
 const { upvote, downvote } = require('./voting_handlers');
 
 function getArticles(url, request) {

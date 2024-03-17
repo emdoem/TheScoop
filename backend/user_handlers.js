@@ -1,4 +1,4 @@
-const { database } = require('../server');
+const { database } = require('./database');
 
 function getUser(url, request) {
   const username = url.split('/').filter(segment => segment)[1];
